@@ -151,5 +151,9 @@ public class UniqueTagList implements Iterable<Tag> {
     public Iterator<Tag> iterator() {
         return internalList.iterator();
     }
+    
+    public List<Tag> getInternalList() {
+        return internalList;
+    }
 
 }

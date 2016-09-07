@@ -5,11 +5,14 @@ import seedu.addressbook.data.person.UniquePersonList.*;
 import seedu.addressbook.data.tag.UniqueTagList;
 import seedu.addressbook.data.tag.UniqueTagList.*;
 import seedu.addressbook.data.tag.Tag;
+import seedu.addressbook.data.tag.Tagging;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Represents the entire address book. Contains the data of the address book.
@@ -22,6 +25,7 @@ public class AddressBook {
 
     private final UniquePersonList allPersons;
     private final UniqueTagList allTags; // can contain tags not attached to any person
+    private final ArrayList<Tagging> tagLogs = new ArrayList<>();
 
     /**
      * Creates an empty address book.
@@ -79,6 +83,7 @@ public class AddressBook {
     public void addPerson(Person toAdd) throws DuplicatePersonException {
         syncTagsWithMasterList(toAdd);
         allPersons.add(toAdd);
+        writeTagLog(toAdd);
     }
 
     /**
@@ -88,6 +93,15 @@ public class AddressBook {
      */
     public void addTag(Tag toAdd) throws DuplicateTagException {
         allTags.add(toAdd);
+    }
+    
+    public void writeTagLog(Person toAdd) {
+        List<Tag> tagList = toAdd.getTags().getInternalList();
+        for (Tag tag : tagList) {
+            Tagging newTag = new Tagging(toAdd, tag);
+            tagLogs.add(newTag);
+        }
+        
     }
 
     /**
@@ -111,6 +125,15 @@ public class AddressBook {
      */
     public void removePerson(ReadOnlyPerson toRemove) throws PersonNotFoundException {
         allPersons.remove(toRemove);
+        removeFromTagLog((Person) toRemove);
+    }
+    
+    public void removeFromTagLog(Person person) {
+        List<Tag> tagList = person.getTags().getInternalList();
+        for (Tag tag : tagList) {
+            Tagging newTag = new Tagging(person, tag, false);
+            tagLogs.add(newTag);
+        }
     }
 
     /**
@@ -143,4 +166,9 @@ public class AddressBook {
     public UniqueTagList getAllTags() {
         return new UniqueTagList(allTags);
     }
+    
+    public ArrayList<Tagging> getTagLogs() {
+        return tagLogs;
+    }
+   
 }

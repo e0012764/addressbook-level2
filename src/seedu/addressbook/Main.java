@@ -8,7 +8,9 @@ import seedu.addressbook.data.AddressBook;
 import seedu.addressbook.parser.Parser;
 import seedu.addressbook.storage.StorageFile;
 import seedu.addressbook.ui.TextUi;
+import seedu.addressbook.data.tag.Tagging;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +74,10 @@ public class Main {
 
     /** Prints the Goodbye message and exits. */
     private void exit() {
+        ArrayList<Tagging> tagLog = addressBook.getTagLogs();
+        for (Tagging tag : tagLog) {
+            ui.showToUser(tag.printTagging());
+        }
         ui.showGoodbyeMessage();
         System.exit(0);
     }
